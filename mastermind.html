@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASTERMIND Diagnostic Network</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;600&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #005f73;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .height-input {
+            display: flex;
+            justify-content: space-between;
+        }
+        .height-input input {
+            width: 48%;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007f5f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005f43;
+        }
+        .result {
+            margin-top: 20px;
+            background-color: #e0f7fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #b2ebf2;
+        }
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MASTERMIND Diagnostic Network</h1>
+    <div class="container">
+        <label for="age">Age:</label>
+        <input type="number" id="age" placeholder="Enter age" min="1" max="120" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" onchange="togglePregnancy()" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <label for="pregnant" id="pregnantLabel">Pregnant:</label>
+        <select id="pregnant" disabled>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+
+        <label for="temperature">Temperature (°C):</label>
+        <input type="number" id="temperature" placeholder="Enter temperature" step="0.1" min="30" max="45" required>
+
+        <label for="heartRate">Heart Rate (bpm):</label>
+        <input type="number" id="heartRate" placeholder="Enter heart rate" min="30" max="200" required>
+
+        <label for="bpSys">Blood Pressure (Systolic mmHg):</label>
+        <input type="number" id="bpSys" placeholder="Enter systolic BP (e.g., 120)" min="80" max="200" required>
+
+        <label for="bpDia">Blood Pressure (Diastolic mmHg):</label>
+        <input type="number" id="bpDia" placeholder="Enter diastolic BP (e.g., 80)" min="40" max="120" required>
+
+        <label for="bodyPain">Body Pain Location:</label>
+        <select id="bodyPain">
+            <option value="none">None</option>
+            <option value="chest">Chest</option>
+            <option value="abdomen">Abdomen</option>
+            <option value="head">Head (Migraine)</option>
+            <option value="joints">Joints</option>
+            <option value="back">Back</option>
+        </select>
+
+        <label for="weight">Weight (kg):</label>
+        <input type="number" id="weight" placeholder="Enter weight" min="1" max="200" required>
+
+        <label for="height">Height:</label>
+        <div class="height-input">
+            <input type="number" id="heightFeet" placeholder="Feet" min="1" max="7" required>
+            <input type="number" id="heightInches" placeholder="Inches" min="0" max="11" required>
+        </div>
+
+        <button onclick="identifyCondition()">Identify Condition</button>
+
+        <div class="result" id="result"></div>
+
+        <p class="disclaimer">
+            <img src="https://img.icons8.com/ios/50/000000/error--v1.png" alt="Disclaimer Icon" class="icon"/>
+            <strong>Disclaimer:</strong> This tool is for demonstration purposes only and is not a substitute for professional medical advice. Always consult a healthcare provider for accurate diagnosis and treatment.
+        </p>
+    </div>
+
+    <script>
+        // Function to calculate BMI
+        function calculateBMI(weight, heightFeet, heightInches) {
+            const heightInMeters = ((heightFeet * 12) + heightInches) * 0.0254;
+            return (weight / (heightInMeters * heightInMeters)).toFixed(2);
+        }
+
+        // Function to determine heart rate status
+        function heartRateStatus(heartRate) {
+            if (heartRate < 60) return "Bradycardia";
+            if (heartRate > 100) return "Tachycardia";
+            return "Normal";
+        }
+
+        // Function to determine blood pressure status
+        function bloodPressureStatus(bpSys, bpDia) {
+            if (bpSys < 90 || bpDia < 60) return "Low Blood Pressure";
+            if (bpSys > 140 || bpDia > 90) return "High Blood Pressure";
+            return "Normal";
+        }
+
+        // Function to determine temperature status
+        function temperatureStatus(temperature) {
+            if (temperature < 36.1) return "Hypothermia";
+            if (temperature > 37.5) return "Fever";
+            return "Normal";
+        }
+
+        // Function to toggle pregnancy options
+        function togglePregnancy() {
+            const gender = document.getElementById('gender').value;
+            document.getElementById('pregnant').disabled = gender !== 'female';
+        }
+
+        // Function to identify the condition based on input
+        function identifyCondition() {
+            const age = parseInt(document.getElementById('age').value);
+            const gender = document.getElementById('gender').value;
+            const pregnant = document.getElementById('pregnant').value;
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            const heartRate = parseInt(document.getElementById('heartRate').value);
+            const bpSys = parseInt(document.getElementById('bpSys').value);
+            const bpDia = parseInt(document.getElementById('bpDia').value);
+            const bodyPain = document.getElementById('bodyPain').value;
+            const weight = parseInt(document.getElementById('weight').value);
+            const heightFeet = parseInt(document.getElementById('heightFeet').value);
+            const heightInches = parseInt(document.getElementById('heightInches').value);
+
+            // Calculate BMI
+            const bmi = calculateBMI(weight, heightFeet, heightInches);
+
+            // Get statuses
+            const heartStatus = heartRateStatus(heartRate);
+            const bpStatus = bloodPressureStatus(bpSys, bpDia);
+            const tempStatus = temperatureStatus(temperature);
+
+            // Array to store possible conditions
+            let conditions = [];
+
+            // Add conditions based on criteria
+            const conditionsList = [
+                { name: "Obesity", criteria: bmi > 30 },
+                { name: "Underweight", criteria: bmi < 18.5 },
+                { name: "Bradycardia", criteria: heartRate < 60 },
+                { name: "Tachycardia", criteria: heartRate > 100 },
+                { name: "Low Blood Pressure", criteria: bpSys < 90 || bpDia < 60 },
+                { name: "High Blood Pressure", criteria: bpSys > 140 || bpDia > 90 },
+                { name: "Fever", criteria: temperature > 37.5 },
+                { name: "Hypothermia", criteria: temperature < 36.1 },
+                { name: "Pregnancy", criteria: gender === "female" && pregnant === "yes" },
+                { name: "Diabetes", criteria: bmi > 25 && age > 45 },
+                { name: "Hypertension", criteria: bpSys > 140 },
+                { name: "Heart Disease", criteria: heartRate > 100 && bpSys > 140 },
+                { name: "Asthma", criteria: bodyPain === "chest" && temperature > 37.5 },
+                { name: "Chronic Obstructive Pulmonary Disease (COPD)", criteria: bodyPain === "chest" && weight > 100 },
+                { name: "Tuberculosis (TB)", criteria: bodyPain === "chest" && temperature > 37.5 },
+                { name: "Stroke", criteria: age > 65 && (bodyPain === "head" || bodyPain === "chest") },
+                { name: "Measles", criteria: bodyPain === "head" && temperature > 37.5 },
+                { name: "Cholecystitis", criteria: bodyPain === "abdomen" && weight > 80 },
+                { name: "Deep Vein Thrombosis (DVT)", criteria: bodyPain === "joints" && age > 50 },
+                { name: "Irritable Bowel Syndrome (IBS)", criteria: bodyPain === "abdomen" && weight < 50 },
+                { name: "Gout", criteria: bodyPain === "joints" && weight > 100 },
+                { name: "Cushing's Disease", criteria: bmi > 30 && bodyPain === "back" },
+                { name: "Meningitis", criteria: bodyPain === "head" && temperature > 38 },
+                { name: "Cancer", criteria: bodyPain === "joints" && age > 50 },
+                { name: "Pneumonia", criteria: bodyPain === "chest" && temperature > 38 },
+                { name: "Bronchitis", criteria: bodyPain === "chest" && heartRate > 100 },
+                { name: "Anemia", criteria: temperature < 36.5 && heartRate < 60 },
+                { name: "Lung Infection", criteria: bodyPain === "chest" && age < 60 },
+                { name: "Rheumatoid Arthritis", criteria: bodyPain === "joints" && age > 45 },
+                { name: "Multiple Sclerosis", criteria: bodyPain === "joints" && temperature > 37 },
+                { name: "Osteoporosis", criteria: bodyPain === "back" && age > 65 },
+                { name: "Fibromyalgia", criteria: bodyPain === "joints" && temperature < 36.5 },
+                { name: "Chronic Fatigue Syndrome", criteria: bodyPain === "back" && weight < 50 },
+                { name: "Gastroesophageal Reflux Disease (GERD)", criteria: bodyPain === "chest" && age > 40 },
+                { name: "Peptic Ulcer Disease", criteria: bodyPain === "abdomen" && weight < 70 },
+                { name: "Hypothyroidism", criteria: bodyPain === "joints" && heartRate < 60 },
+                { name: "Hyperthyroidism", criteria: bodyPain === "joints" && heartRate > 100 },
+                { name: "Allergy", criteria: bodyPain === "joints" && temperature > 37.5 },
+                { name: "Parkinson's Disease", criteria: bodyPain === "head" && age > 60 },
+                { name: "Alzheimer's Disease", criteria: bodyPain === "head" && age > 70 },
+                { name: "Sepsis", criteria: bodyPain === "chest" && temperature > 39 },
+                { name: "Endometriosis", criteria: bodyPain === "abdomen" && gender === "female" },
+                { name: "Cystic Fibrosis", criteria: bodyPain === "chest" && temperature > 37.5 },
+                { name: "Chronic Kidney Disease", criteria: bodyPain === "abdomen" && age > 60 },
+                { name: "Liver Disease", criteria: bodyPain === "abdomen" && weight > 80 },
+                { name: "Heart Failure", criteria: bodyPain === "chest" && heartRate > 100 },
+                { name: "Epilepsy", criteria: bodyPain === "head" && age < 40 },
+                { name: "Vertigo", criteria: bodyPain === "head" && temperature < 36.5 },
+                { name: "Myocardial Infarction", criteria: bodyPain === "chest" && age > 55 },
+                { name: "Peripheral Artery Disease", criteria: bodyPain === "joints" && age > 60 },
+                // Additional conditions
+                { name: "Tetanus", criteria: bodyPain === "muscles" && temperature > 37.5 },
+                { name: "Chronic Sinusitis", criteria: bodyPain === "head" && temperature > 37.5 },
+                { name: "Peptic Ulcer", criteria: bodyPain === "abdomen" && temperature < 36.5 },
+                { name: "Kidney Stones", criteria: bodyPain === "abdomen" && age > 40 },
+                { name: "Hepatitis", criteria: bodyPain === "abdomen" && temperature > 37.5 },
+                { name: "Myasthenia Gravis", criteria: bodyPain === "muscles" && heartRate < 60 },
+                { name: "Interstitial Lung Disease", criteria: bodyPain === "chest" && weight < 50 },
+                { name: "Systemic Lupus Erythematosus", criteria: bodyPain === "joints" && temperature > 37.5 },
+                { name: "Paget's Disease", criteria: bodyPain === "bones" && age > 60 },
+                { name: "Wilson's Disease", criteria: bodyPain === "abdomen" && age < 30 },
+                { name: "Chronic Pancreatitis", criteria: bodyPain === "abdomen" && weight > 80 },
+                { name: "Fibrous Dysplasia", criteria: bodyPain === "bones" && temperature > 37 },
+                { name: "Primary Biliary Cirrhosis", criteria: bodyPain === "abdomen" && age > 50 },
+                { name: "Acromegaly", criteria: bodyPain === "joints" && heightFeet > 6 },
+                { name: "Hemochromatosis", criteria: bodyPain === "joints" && weight > 90 },
+                { name: "Marfan Syndrome", criteria: bodyPain === "joints" && heightFeet > 6 },
+                { name: "Multiple Myeloma", criteria: bodyPain === "bones" && age > 60 },
+                { name: "Glycogen Storage Disease", criteria: bodyPain === "muscles" && weight < 50 },
+                { name: "Sarcoidosis", criteria: bodyPain === "chest" && temperature > 37 },
+                { name: "Neurofibromatosis", criteria: bodyPain === "skin" && age < 40 },
+                { name: "Ehlers-Danlos Syndrome", criteria: bodyPain === "joints" && temperature < 36.5 },
+                { name: "Scleroderma", criteria: bodyPain === "skin" && temperature > 37.5 },
+                { name: "Celiac Disease", criteria: bodyPain === "abdomen" && weight < 50 },
+                { name: "Addison's Disease", criteria: bodyPain === "back" && temperature < 36.5 },
+                { name: "Bipolar Disorder", criteria: bodyPain === "head" && age < 40 },
+                { name: "Schizophrenia", criteria: bodyPain === "head" && age > 18 },
+                { name: "Obsessive-Compulsive Disorder (OCD)", criteria: bodyPain === "head" && age > 15 },
+                { name: "Generalized Anxiety Disorder", criteria: bodyPain === "head" && age > 18 },
+                { name: "Autism Spectrum Disorder", criteria: bodyPain === "none" && age < 10 },
+                { name: "Attention Deficit Hyperactivity Disorder (ADHD)", criteria: bodyPain === "none" && age < 10 },
+                { name: "Post-Traumatic Stress Disorder (PTSD)", criteria: bodyPain === "head" && age > 18 },
+            ];
+            conditionsList.forEach(cond => {
+                if (cond.criteria) conditions.push(cond.name);
+            });
+
+            // Show results
+            const resultElement = document.getElementById('result');
+            if (conditions.length > 0) {
+                resultElement.innerHTML = `<strong>Possible Conditions:</strong> ${conditions.join(', ')}`;
+            } else {
+                resultElement.innerHTML = "No significant conditions detected based on the provided data.";
+            }
+        }
+    </script>
+
+</body>
+</html>

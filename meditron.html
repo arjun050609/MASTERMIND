@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MASTERMIND Demonstrative Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=SUSE:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .collapsible {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 20px;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            border-radius: 8px;
+            margin: 15px 0;
+            transition: background-color 0.3s ease;
+            font-family: 'SUSE', sans-serif;
+        }
+
+        .collapsible:hover {
+            background-color: #0056b3;
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: white;
+            font-weight: bold;
+            float: right;
+            margin-left: 10px;
+        }
+
+        .collapsible.active:after {
+            content: '\2212';
+        }
+
+        .content {
+            padding: 20px;
+            display: none;
+            overflow: hidden;
+            background-color: #e1e1e1;
+            border-radius: 8px;
+        }
+
+        .chatbox {
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            width: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            background: white;
+            padding: 20px;
+            margin: 30px auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-family: 'SUSE', sans-serif;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 16px;
+        }
+
+        .message.user {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .message.bot {
+            background-color: #e1e1e1;
+            color: black;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        #question {
+            width: calc(100% - 22px);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-family: 'SUSE', sans-serif;
+            font-size: 16px;
+        }
+
+        #send {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+            font-family: 'SUSE', sans-serif;
+        }
+
+        #send:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<button class="collapsible">Background</button>
+<div class="content">
+    <p>In traditional hospital settings, the diagnostic process for a patient involves several stages that can be time-consuming and resource-intensive. Initially, a nurse or Resident Medical Officer (RMO) collects basic data, such as vital signs and medical history, and then enquires about the patient's symptoms. Following this preliminary assessment, patients often experience long wait times for a doctor to become available for further examination. Once a doctor arrives, a comprehensive evaluation is conducted, which usually includes ordering various diagnostic tests—ranging from imaging scans to blood work. This stage can be prolonged based on the hospital's capacity and the availability of lab technicians. After gathering and analysing the test data, the doctor carefully considers all potential diagnoses before prescribing a treatment plan or initiating any medical intervention.</p>
+</div>
+
+<button class="collapsible">Challenges</button>
+<div class="content">
+    <p>This methodical approach, while intended to ensure accurate diagnosis, can result in significant delays, particularly in critical situations such as heart attacks, brain strokes, or severe traumatic injuries. In these emergencies, every minute counts, and delays can drastically impact patient outcomes, sometimes with life-threatening consequences. Additionally, the current system places a heavy burden on hospital resources, leading to overworked lab technicians and RMOs who struggle to manage both urgent cases and ongoing patient care. This strain adversely affects hospital efficiency and patient care quality.</p>
+</div>
+
+<button class="collapsible">The Solution: MEDITRON</button>
+<div class="content">
+    <p>To address these challenges, we introduce the Medical Emergency Diagnostic Intervention Technology for Rapid Outcome Navigation—MEDITRON. MEDITRON is an AI-enabled medical device designed to revolutionise the emergency care diagnostic process. By rapidly analysing patient symptoms, medical history, and test data, MEDITRON delivers preliminary diagnoses with unprecedented speed and accuracy. It significantly reduces diagnostic delays in critical situations, allowing medical professionals to initiate treatment more swiftly. Additionally, by automating much of the diagnostic process, MEDITRON alleviates the workload of medical professionals and lab technicians, enabling them to focus on patient care and decision-making. MEDITRON also enhances diagnostic accuracy by minimising human error and providing AI-generated insights that physicians can cross-reference with their clinical expertise. Ultimately, MEDITRON aims to optimise resource allocation, expedite diagnosis, and improve patient outcomes in emergency healthcare.</p>
+</div>
+
+<button class="collapsible">MEDITRON's Creations</button>
+<div class="content">
+    <p>MEDITRON, MASTERMIND, the Sonic Watch and this chatbot have been developed by Tagore Corporation™.</p>
+</div>
+
+<div class="chatbox" id="chatbox">
+    <!-- Chat messages will be dynamically added here -->
+</div>
+
+<input type="text" id="question" placeholder="Pick up the paper given to you and ask any question from there!">
+<button id="send" onclick="sendMessage()">Send</button>
+
+<script>
+const faqData = {
+    "What is MEDITRON?": "MEDITRON is an AI-enabled medical device designed to revolutionise the emergency care diagnostic process by rapidly analysing patient symptoms, medical history, and test data to deliver preliminary diagnoses with speed and accuracy.",
+    "How does MEDITRON improve diagnostic speed?": "MEDITRON improves diagnostic speed by quickly analyzing patient data and providing preliminary diagnoses, reducing the time taken for medical professionals to assess and initiate treatment.",
+    "How accurate is MEDITRON in diagnosis?": "MEDITRON's accuracy is enhanced through advanced AI algorithms trained on extensive medical data, continuously updated with real-time case information, and integrated diagnostic technologies.",
+    "What types of data does MEDITRON use for analysis?": "MEDITRON uses patient symptoms, medical history, and diagnostic test data for analysis to generate preliminary diagnoses and support medical decision-making.",
+    "Can MEDITRON be used for non-emergency cases?": "MEDITRON is primarily designed for emergency diagnostics and critical situations but can be adapted for other medical applications with modifications.",
+    "How does MEDITRON automate the diagnostic process?": "MEDITRON automates the diagnostic process by rapidly analyzing patient data and generating preliminary diagnoses, reducing the need for manual data collection and analysis.",
+    "What are the main advantages of using MEDITRON in emergency situations?": "The main advantages of using MEDITRON in emergency situations include faster diagnosis, reduced delays, and improved patient outcomes through timely intervention.",
+    "How does Surgical MEDITRON support complex surgeries?": "Surgical MEDITRON supports complex surgeries by providing detailed imaging, real-time surgical navigation, and AI-driven insights to assist surgeons in planning and executing procedures.",
+    "How does Emergency MEDITRON aid in initial patient assessment?": "Emergency MEDITRON aids in initial patient assessment by providing immediate diagnostic imaging, real-time assessments, and bandaging systems for initial stabilization.",
+    "What role does AI play in MEDITRON’s diagnostic process?": "AI plays a crucial role in MEDITRON’s diagnostic process by analyzing patient data, generating preliminary diagnoses, and providing insights based on extensive medical data.",
+    "How does MASTERMIND improve medical decision-making?": "MASTERMIND improves medical decision-making by providing access to comprehensive medical knowledge, real-time data, and AI-powered analysis to guide healthcare professionals.",
+    "What is the purpose of MEDITRON?": "The purpose of MEDITRON is to streamline the diagnostic process in emergency care by providing rapid, accurate preliminary diagnoses and alleviating the workload of medical staff.",
+    "How does MEDITRON ensure the accuracy of its diagnoses?": "MEDITRON ensures accuracy by using advanced AI algorithms trained on extensive medical data and continuously updated with real-time information.",
+    "What are the key features of Surgical MEDITRON?": "Key features of Surgical MEDITRON include a large-sized display, imaging scanners, a camera, anaesthetic dispersion technology, and AI trained on surgeries.",
+    "How does Emergency MEDITRON manage traumatic injuries?": "Emergency MEDITRON manages traumatic injuries by providing immediate diagnostic imaging, bandaging systems, and AI-generated recommendations for treatment.",
+    "What are the benefits of integrating MEDITRON with hospital systems?": "Integrating MEDITRON with hospital systems facilitates seamless data exchange, improves interoperability, and enhances overall efficiency in patient care.",
+    "How does MASTERMIND support ongoing medical research?": "MASTERMIND supports ongoing medical research by providing access to a comprehensive database of medical knowledge, research papers, and case studies.",
+    "What is the main function of MASTERMIND’s AI?": "The main function of MASTERMIND’s AI is to analyze new medical cases, cross-reference with past data, and provide actionable insights and recommendations.",
+    "How does MEDITRON reduce the workload of medical staff?": "MEDITRON reduces the workload of medical staff by automating the diagnostic process, providing rapid preliminary diagnoses, and supporting decision-making with AI insights.",
+    "What is the role of the camera in Surgical MEDITRON?": "The camera in Surgical MEDITRON is used for real-time visualization during surgical procedures, aiding in precision and decision-making.",
+    "How does Emergency MEDITRON handle non-emergency scenarios?": "Emergency MEDITRON can be adapted for non-emergency scenarios by adjusting its features and functionalities, though it is primarily designed for urgent care.",
+    "What types of surgeries can benefit from Surgical MEDITRON?": "Surgical MEDITRON can benefit a wide range of surgeries, including general, orthopaedic, and neurosurgeries, due to its advanced diagnostic features.",
+    "How does MASTERMIND enhance diagnostic support?": "MASTERMIND enhances diagnostic support by providing a comprehensive database of medical knowledge, real-time case data, and AI-generated insights.",
+    "What is the primary function of the camera in Emergency MEDITRON?": "The primary function of the camera in Emergency MEDITRON is to provide real-time visual assessment of patient conditions for accurate diagnostics.",
+    "How does MEDITRON minimize human error in diagnostics?": "MEDITRON minimizes human error by using AI algorithms trained on extensive data to provide accurate preliminary diagnoses and insights.",
+    "How does MASTERMIND support global medical knowledge?": "MASTERMIND supports global medical knowledge by consolidating data from hospitals worldwide and offering insights based on a vast range of medical information.",
+    "What is the benefit of having a centralized database in MASTERMIND?": "The benefit of a centralized database in MASTERMIND is the ability to access a comprehensive repository of medical information and case data for informed decision-making.",
+    "How does MEDITRON improve patient outcomes in emergencies?": "MEDITRON improves patient outcomes in emergencies by providing rapid diagnostics, reducing delays, and facilitating timely treatment interventions.",
+    "What role does AI play in the Surgical MEDITRON?": "AI in Surgical MEDITRON assists with surgical planning, real-time navigation, and decision-making based on extensive data and previous surgical cases.",
+    "How does Emergency MEDITRON assist with immediate patient care?": "Emergency MEDITRON assists with immediate patient care by providing diagnostic imaging, bandaging systems, and AI-generated recommendations for urgent treatment.",
+    "What are the key features of MASTERMIND’s real-time data sync?": "Key features of MASTERMIND’s real-time data sync include live updates from MEDITRON units, continuous monitoring of patient cases, and integration with current medical data.",
+    "How does MEDITRON support resource optimization in hospitals?": "MEDITRON supports resource optimization by automating diagnostics, reducing the workload on medical staff, and improving the efficiency of hospital operations.",
+    "What benefits does the conversational guide provide in Emergency MEDITRON?": "The conversational guide in Emergency MEDITRON helps in identifying patient complaints and providing initial diagnostic information through a user-friendly interface.",
+    "How does MASTERMIND contribute to patient care improvement?": "MASTERMIND contributes to patient care improvement by offering extensive medical knowledge, real-time data analysis, and AI-powered diagnostic support.",
+    "What is the purpose of the log-in panel in Surgical MEDITRON?": "The log-in panel in Surgical MEDITRON provides secure access for medical staff to view patient information and interact with the system during surgeries.",
+    "How does MEDITRON handle data security and privacy?": "MEDITRON handles data security and privacy through encryption, secure authentication, and access controls to protect patient information.",
+    "How does Emergency MEDITRON support injury management before transfer?": "Emergency MEDITRON supports injury management before transfer by providing bandaging systems and initial care tools to stabilize patients.",
+    "What role does the X-ray scanner play in MEDITRON?": "The X-ray scanner in MEDITRON provides detailed imaging to assist in diagnosing fractures, tumors, and other conditions.",
+    "How does MASTERMIND enhance medical research and learning?": "MASTERMIND enhances medical research and learning by tracking cases, providing access to research papers, and offering AI-driven insights for continuous education.",
+    "What are the key benefits of using MASTERMIND’s AI-powered analysis?": "Key benefits include improved diagnostic accuracy, actionable insights based on past cases, and recommendations for treatment based on extensive data.",
+    "How does Surgical MEDITRON support real-time surgical decisions?": "Surgical MEDITRON supports real-time surgical decisions by providing detailed imaging, AI-driven insights, and immediate data to assist surgeons during operations.",
+    "How does MEDITRON streamline the diagnostic process in emergencies?": "MEDITRON streamlines the diagnostic process by rapidly analyzing patient data and providing preliminary diagnoses, reducing delays and improving response times.",
+    "What are the primary functions of the biochemical engine in Emergency MEDITRON?": "The biochemical engine in Emergency MEDITRON performs blood tests and analyzes biochemical data to assist in diagnosing conditions and managing patient care.",
+    "How does MASTERMIND assist with complex medical cases?": "MASTERMIND assists with complex medical cases by providing access to extensive medical knowledge, historical data, and AI-powered analysis for accurate diagnostics.",
+    "What is the role of the AI in MASTERMIND’s case log?": "The AI in MASTERMIND’s case log tracks and analyzes medical cases, providing insights, trends, and patterns for research and continuous learning.",
+    "How does MEDITRON’s AI improve diagnostic accuracy?": "MEDITRON’s AI improves diagnostic accuracy by analyzing extensive medical data, reducing human error, and offering precise preliminary diagnoses.",
+    "How does MASTERMIND support secure data access?": "MASTERMIND supports secure data access through encryption, authentication protocols, and user access controls to ensure that medical information is protected.",
+    "What types of surgical procedures benefit from Surgical MEDITRON’s features?": "Surgical procedures such as complex surgeries, trauma surgeries, and routine operations benefit from Surgical MEDITRON’s advanced imaging and AI support.",
+    "How does Emergency MEDITRON handle patient mental health assessments?": "Emergency MEDITRON handles mental health assessments through conversational guides and AI analysis to identify potential mental health issues and provide initial support.",
+    "What are the main advantages of MASTERMIND’s global medical database?": "Main advantages include access to a vast range of medical information, real-time data updates, and insights from global case studies for informed decision-making."
+};
+document.addEventListener('DOMContentLoaded', function() {
+    const coll = document.getElementsByClassName("collapsible");
+    for (let i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            const content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+});
+
+function sendMessage() {
+    const chatbox = document.getElementById('chatbox');
+    const questionInput = document.getElementById('question');
+    const userQuestion = questionInput.value.trim();
+    if (userQuestion === "") return;
+    
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user';
+    userMessage.textContent = userQuestion;
+    chatbox.appendChild(userMessage);
+
+    const botMessage = document.createElement('div');
+    botMessage.className = 'message bot';
+    botMessage.textContent = faqData[userQuestion] || "Unfortunately, this question is a little beyond my capabilities right now. If this question is on the list of questions given to you, retry asking the question, by exactly re-typing the questions. As an initial model, I do not have LLM capabilities yet.";
+    chatbox.appendChild(botMessage);
+
+    chatbox.scrollTop = chatbox.scrollHeight;
+    questionInput.value = '';
+}
+</script>
+</body>
+</html>
